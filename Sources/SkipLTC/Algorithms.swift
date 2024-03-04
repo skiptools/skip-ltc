@@ -9,7 +9,7 @@ import LibTomCrypt
 #endif
 
 internal final class AlgorithmsLibrary {
-    static let shared = registerNatives(AlgorithmsLibrary(), frameworkName: "SkipLTC", libraryName: "libtomcrypt")
+    static let shared = registerNatives(AlgorithmsLibrary(), frameworkName: "SkipLTC", libraryName: "tomcrypt")
 
     // MARK: Self-test functions
 
