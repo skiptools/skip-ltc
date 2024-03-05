@@ -24,3 +24,11 @@ build:
             - block: 'cmake'
               contents:
                 - 'path = file("ext/CMakeLists.txt")'
+#        - block: 'buildFeatures'
+#          contents:
+#            - 'prefab = true'
+#            - 'prefabPublishing = true'
+#            - 'buildConfig = true'
+#        - block: 'prefab'
+#          contents:
+#            - 'create("tomcrypt")'
