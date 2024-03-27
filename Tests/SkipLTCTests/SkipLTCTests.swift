@@ -6,12 +6,45 @@ import XCTest
 import Foundation
 import OSLog
 @testable import SkipLTC
+import SkipFFI
 
 fileprivate let logger: Logger = Logger(subsystem: "test", category: "SkipLTC")
 
 fileprivate let lib: AlgorithmsLibrary = AlgorithmsLibrary.shared
 
 final class AlgorithmsTest: XCTestCase {
+    func testSHA256() throws {
+        let state: HashPointer = createHashPointer()
+        defer {
+            #if SKIP
+            state.close()
+            #else
+            state.deallocate()
+            #endif
+        }
+        let initResult = lib.sha256_init(state: state)
+        XCTAssertEqual(0, initResult)
+
+        let data = Data("Hello World".utf8)
+        let len = Int64(data.count)
+        let processResult = data.withUnsafeBytes { ptr in
+             lib.sha256_process(state: state, data: ptr, len: len)
+        }
+        XCTAssertEqual(0, processResult)
+
+        #if SKIP
+        throw XCTSkip("need more SkipFFI Data support")
+        #else
+        var hash = Data(count: 32)
+        let doneResult = hash.withUnsafeMutableBytes { ptr in
+            lib.sha256_done(state: state, data: ptr)
+        }
+        XCTAssertEqual(0, doneResult)
+
+        XCTAssertEqual("a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e", hash.hex())
+        #endif
+    }
+    
     func testAlgorithms() throws {
         XCTAssertEqual(0, lib.safer_k64_test())
         XCTAssertEqual(0, lib.safer_sk64_test())
@@ -108,4 +141,9 @@ final class AlgorithmsTest: XCTestCase {
         //XCTAssertEqual(0, lib.xts_test())
 
     }
+}
+
+extension Sequence where Element == UInt8 {
+    /// Convert this sequence of bytes into a hex string
+    public func hex() -> String { map { String(format: "%02x", $0) }.joined() }
 }

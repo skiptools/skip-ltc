@@ -8,8 +8,40 @@ import SkipFFI
 import LibTomCrypt
 #endif
 
+#if SKIP
+typealias HashPointer = com.sun.jna.Memory
+func createHashPointer() -> HashPointer {
+    com.sun.jna.Memory(416) // MemoryLayout<hash_state>.size
+}
+#else
+typealias HashPointer = UnsafeMutablePointer<hash_state>
+func createHashPointer() -> HashPointer {
+    HashPointer.allocate(capacity: 1)
+}
+#endif
+
 internal final class AlgorithmsLibrary {
     static let shared = registerNatives(AlgorithmsLibrary(), frameworkName: "SkipLTC", libraryName: "tomcrypt")
+
+    // MARK: SHA-256
+
+    //int i;
+    //unsigned char tmp[32];
+    //hash_state md;
+    //
+    //for (i = 0; i < (int)(sizeof(tests) / sizeof(tests[0])); i++) {
+    //    sha256_init(&md);
+    //    sha256_process(&md, (unsigned char*)tests[i].msg, (unsigned long)XSTRLEN(tests[i].msg));
+    //    sha256_done(&md, tmp);
+    //    if (compare_testvector(tmp, sizeof(tmp), tests[i].hash, sizeof(tests[i].hash), "SHA256", i)) {
+    //       return CRYPT_FAIL_TESTVECTOR;
+    //    }
+    //}
+    //return CRYPT_OK;
+
+    /* SKIP EXTERN */ public func sha256_init(state: HashPointer?) -> Int32 { LibTomCrypt.sha256_init(state) }
+    /* SKIP EXTERN */ public func sha256_process(state: HashPointer?, data: UnsafeRawBufferPointer?, len: Int64) -> Int32 { LibTomCrypt.sha256_process(state, data?.baseAddress?.assumingMemoryBound(to: UInt8.self), UInt(len)) }
+    /* SKIP EXTERN */ public func sha256_done(state: HashPointer?, data: UnsafeMutableRawBufferPointer?) -> Int32 { LibTomCrypt.sha256_done(state, data?.baseAddress?.assumingMemoryBound(to: UInt8.self)) }
 
     // MARK: Self-test functions
 
