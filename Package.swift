@@ -9,9 +9,9 @@ let package = Package(
         .library(name: "SkipLTC", type: .dynamic, targets: ["SkipLTC"]),
     ],
     dependencies: [
-        .package(url: "https://source.skip.tools/skip.git", from: "0.8.19"),
+        .package(url: "https://source.skip.tools/skip.git", from: "0.8.46"),
         .package(url: "https://source.skip.tools/skip-ffi.git", from: "0.3.2"),
-        .package(url: "https://source.skip.tools/skip-unit.git", from: "0.6.1"),
+        .package(url: "https://source.skip.tools/skip-unit.git", from: "0.7.0"),
     ],
     targets: [
         .target(name: "SkipLTC", dependencies: [
