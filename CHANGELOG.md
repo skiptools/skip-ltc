@@ -1,3 +1,9 @@
+## 0.2.1
+
+Released 2024-10-16
+
+  - Bump cmake_minimum_required to 3.3 to fix skip export error
+
 ## 0.2.0
 
 Released 2024-08-15
