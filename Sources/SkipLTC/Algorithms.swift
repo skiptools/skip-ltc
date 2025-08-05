@@ -1,19 +1,18 @@
 // SPDX-License-Identifier: LGPL-3.0-only WITH LGPL-3.0-linking-exception
+#if SKIP || canImport(SkipFFI)
 import Foundation
 import SkipFFI
 #if !SKIP
 import LibTomCrypt
-#endif
 
-#if SKIP
-typealias HashPointer = com.sun.jna.Memory
-func createHashPointer() -> HashPointer {
-    com.sun.jna.Memory(416) // MemoryLayout<hash_state>.size
-}
-#else
 typealias HashPointer = UnsafeMutablePointer<hash_state>
 func createHashPointer() -> HashPointer {
     HashPointer.allocate(capacity: 1)
+}
+#else
+typealias HashPointer = com.sun.jna.Memory
+func createHashPointer() -> HashPointer {
+    com.sun.jna.Memory(416) // MemoryLayout<hash_state>.size
 }
 #endif
 
@@ -136,3 +135,4 @@ internal final class AlgorithmsLibrary {
     /* SKIP EXTERN */ public func sosemanuk_test() -> Int32 { LibTomCrypt.sosemanuk_test() }
 
 }
+#endif // !TARGET_OS_ANDROID
