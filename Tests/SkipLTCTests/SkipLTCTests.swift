@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-only WITH LGPL-3.0-linking-exception
 import XCTest
 import Foundation
-import OSLog
 @testable import SkipLTC
 import SkipFFI
-
-fileprivate let logger: Logger = Logger(subsystem: "test", category: "SkipLTC")
 
 fileprivate let lib: AlgorithmsLibrary = AlgorithmsLibrary.shared
 
